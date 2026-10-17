@@ -1,6 +1,15 @@
 # NBA Signal Lab — Development Roadmap
 
-**Status:** planning only; no implementation confirmed. **Rule:** build a correct vertical slice before adding infrastructure. All stage deliverables are proposed, not completed. **Required stack:** Python, Django, FastAPI, PostgreSQL. Other components are conditional on measured need.
+**Status:** planning document; current progress is tracked in [DEVELOPMENT_LOG.md](DEVELOPMENT_LOG.md), not here. **Rule:** build a correct vertical slice before adding infrastructure. All stage deliverables are proposed, not completed. **Required stack:** Python, Django, FastAPI, PostgreSQL. Other components are conditional on measured need.
+
+## Amendments (2026-10-16)
+
+Agreed clarifications, recorded in [DECISIONS.md](DECISIONS.md). Stage numbers are unchanged so references stay valid.
+
+- **Execution order (ADR-012):** 1 → 2 → 3 → 4 → **6 (M1)** → **5** → 7 → 8 (M2) → 9 onward. Django (Stage 5) no longer gates M1.
+- **Ingestion (ADR-010):** a Python package + CLI on the NBA data-plane side, not FastAPI request handlers.
+- **Early tooling (ADR-011):** Postgres-only Docker Compose from Stage 3; basic CI (lint + tests) once code exists. Stages 17–18 mature these.
+- **Document names (ADR-013):** the charter is `docs/PROJECT_SPEC.md`; ADRs live in `docs/DECISIONS.md`; the feasibility report is `docs/DATA_SOURCES.md`.
 
 ## Milestones
 
@@ -16,7 +25,7 @@ Each stage has **required** deliverables; items marked **later** must not block 
 
 ### 1. Charter and repository
 - **Objective / why now:** constrain the product before design proliferates.
-- **Build / execute:** create repository, `docs/project-charter.md`, README stub, `docs/adr/`, GitHub Issues for next three stages, branches/PR workflow. Charter states target users, core historical NBA analysis, MVP scope and non-goals (no betting/fantasy clone, frontend-heavy product, immediate live licensed feed, ML, microservices).
+- **Build / execute:** create repository, `docs/PROJECT_SPEC.md` (charter), README stub, `docs/DECISIONS.md` (ADRs), GitHub Issues for next three stages, branches/PR workflow. Charter states target users, core historical NBA analysis, MVP scope and non-goals (no betting/fantasy clone, frontend-heavy product, immediate live licensed feed, ML, microservices).
 - **Tech:** Git, GitHub, Markdown. **Reinforce:** general API/project concepts. **Learn:** ADRs, scoping, reviews.
 - **Decide:** precise first differentiating analytic (recommended possession reconstruction + historical game-state comparison); users/personas remain unvalidated.
 - **Done / tests:** charter committed; milestone definitions and exclusions documented; issues exist. No code tests.
@@ -24,7 +33,7 @@ Each stage has **required** deliverables; items marked **later** must not block 
 
 ### 2. Data feasibility spike — blocking gate
 - **Objective / why:** validate real data and permissions *before* final schema.
-- **Build / execute:** disposable Python HTTP/data script; inspect teams, players, seasons, schedule, one complete game's box score and play-by-play; save legally reusable, sanitized fixtures; write `docs/data-source-feasibility.md` comparing official/public, third-party, historical/open and paid sources, availability, pricing, IDs, history, rate limits, update frequency, corrections, live delay, permitted uses, attribution and redistribution limits. Verify substitutions, event order and timestamps if possession reconstruction is intended.
+- **Build / execute:** disposable Python HTTP/data script; inspect teams, players, seasons, schedule, one complete game's box score and play-by-play; save legally reusable, sanitized fixtures; write `docs/DATA_SOURCES.md` comparing official/public, third-party, historical/open and paid sources, availability, pricing, IDs, history, rate limits, update frequency, corrections, live delay, permitted uses, attribution and redistribution limits. Verify substitutions, event order and timestamps if possession reconstruction is intended.
 - **Tech:** Python, HTTPX, JSON, candidate dataset/provider. **Reinforce:** REST, JSON, HTTP/security basics. **Learn:** provider contracts, provenance, licensing and rate limits.
 - **Decide:** provider and fallback; whether historical play-by-play supports chosen analytics; live/replay feasibility. **Done:** one real complete game's raw data retrieved under acceptable terms, stable IDs mapped conceptually, documented field gaps and license; otherwise reduce scope/revisit source, don't proceed on assumptions.
 - **Tests:** fixture validation / smoke scripts; no live calls in unit tests. **Pitfall:** treating public access as permission to redistribute; explain source evaluation.
@@ -32,17 +41,17 @@ Each stage has **required** deliverables; items marked **later** must not block 
 ### 3. Canonical NBA schema
 - **Objective / why:** isolate provider IDs and enforce domain invariants.
 - **Build / execute:** ERD and migrations for `Team`, `Player`, `Season`, `RosterMembership`, `Game`, `ProviderEntityMapping`, `IngestionBatch`, `RawGamePayload` metadata; add `GameEvent`, `PlayerGameStats`, `TeamGameStats` only where source supports. Seed sample games. Separate Django control-owned tables from analytics-owned tables/schemas and migration ownership.
-- **Tech:** PostgreSQL, Python, SQLAlchemy/Alembic **proposed** for NBA schema. **Reinforce:** JSON/REST concepts. **Learn:** SQL, normalization, keys, constraints, migrations, indexes, provenance.
+- **Tech:** PostgreSQL (local via Postgres-only Docker Compose, ADR-011), Python, SQLAlchemy/Alembic **proposed** for NBA schema (ADR-007). **Reinforce:** JSON/REST concepts. **Learn:** SQL, normalization, keys, constraints, migrations, indexes, provenance.
 - **Decide:** canonical key types, seasons, roster time validity, raw payload storage, source correction versioning, ORM/migration ownership. **Done:** clean migration works; FK/unique constraints tested; IDs map without collisions; ERD saved.
 - **Tests:** database constraints, migrations, mapping uniqueness. **Pitfall:** leaking provider IDs into every table; explain data modeling tradeoffs.
 
 ### 4. Synchronous provider adapter and ingestion
 - **Objective / why:** correct ingestion before queues.
-- **Build / execute:** provider interface for teams/players/schedule/game/box score/play-by-play; validation/normalization; transactional upserts; ingestion status/errors; import sample data in dependency order; reimport same game five times.
+- **Build / execute:** ingestion package + CLI (ADR-010) with a provider interface for teams/players/schedule/game/box score/play-by-play; validation/normalization; transactional upserts; ingestion status/errors; import sample data in dependency order; reimport same game five times.
 - **Tech:** Python, HTTP client, PostgreSQL, chosen ORM. **Reinforce:** REST/JSON. **Learn:** adapter pattern, idempotency, transactions, correction handling.
 - **Decide:** upsert vs versions, batch transaction boundaries, malformed payload policy. **Done:** no duplicate canonical game/events, failed batches visible, adapter isolated. **Tests:** parser unit, DB integration, duplicate import, malformed response and rollback. **Pitfall:** assuming HTTP 200 means valid data; explain replayable ingestion.
 
-### 5. Django control plane
+### 5. Django control plane (built after Stage 6 / M1 — ADR-012)
 - **Objective / why:** establish user-facing product ownership after useful NBA data exists.
 - **Build / execute:** Django/DRF models for `User`, `Workspace`, `WorkspaceMembership`, `SavedAnalysis`, `Watchlist`, `DataSourceConfiguration` where needed, `AuditEvent`; Django admin; minimal authentication and object-level workspace permissions; simple saved-analysis endpoints.
 - **Tech:** Django, DRF, PostgreSQL. **Reinforce:** authentication, cookies/tokens, REST, server security. **Learn:** Django ORM/admin/migrations/permissions.
@@ -149,10 +158,10 @@ Each stage has **required** deliverables; items marked **later** must not block 
 | 2 | Verify data | Python/HTTP | Source report + real fixture | 1 |
 | 3 | Domain | PostgreSQL | ERD/migrations | 2 |
 | 4 | Ingestion | Python/SQL | Idempotent adapter | 3 |
-| 5 | Product | Django/DRF | Users/workspaces | 3 |
-| 6 | API | FastAPI | M1 vertical slice | 4–5 |
+| 5 | Product | Django/DRF | Users/workspaces | 6 (after M1, ADR-012) |
+| 6 | API | FastAPI | M1 vertical slice | 4 |
 | 7 | Derivation | Python/SQL | Possessions | 6 |
-| 8 | Analytics | Django/FastAPI | M2 MVP | 7 |
+| 8 | Analytics | Django/FastAPI | M2 MVP | 5, 7 |
 | 9 | Recovery | PostgreSQL | Rebuild/corrections | 8 |
 | 10 | SQL performance | PostgreSQL | Baselines/indexes | 8 |
 | 11 | Async jobs | Celery/RabbitMQ | Backfills | 9 |
@@ -167,4 +176,4 @@ Each stage has **required** deliverables; items marked **later** must not block 
 | 20 | Benchmarks | k6/Locust | Measured improvements | 19 or realistic local test env |
 | 21 | Portfolio | Docs/GitHub | M5 handoff-ready project | 20 |
 
-**First action:** create repository and commit **one** `docs/project-charter.md` specifying MVP and non-goals. Do not install infrastructure first.
+**First action:** create repository and commit the charter (`docs/PROJECT_SPEC.md`) specifying MVP and non-goals. Do not install infrastructure first.
