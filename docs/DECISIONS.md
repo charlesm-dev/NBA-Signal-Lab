@@ -110,5 +110,5 @@ Significant decisions and their rationale, newest decisions appended at the end.
 ## ADR-013 — Documentation structure
 
 - **Status:** AGREED (2026-10-16)
-- **Decision:** `docs/PROJECT_SPEC.md` serves as the Stage 1 project charter (replacing the planned `docs/project-charter.md`). This file replaces the planned `docs/adr/` directory with numbered ADRs in one file. `docs/DATA_SOURCES.md` is created in Stage 2 (replacing the planned `docs/data-source-feasibility.md`). The original handoff files are preserved in `docs/archive/` until their content is confirmed incorporated.
+- **Decision:** `docs/PROJECT_SPEC.md` serves as the Stage 1 project charter (replacing the planned `docs/project-charter.md`). This file replaces the planned `docs/adr/` directory with numbered ADRs in one file. `docs/DATA_SOURCES.md` is created in Stage 2 (replacing the planned `docs/data-source-feasibility.md`). The original handoff files were preserved in `docs/archive/` until the developer confirmed their content was incorporated (2026-10-17); they were then deleted and remain in git history at commit `241bf34`.
 - **Consequences:** Fewer, non-overlapping documents; `CLAUDE.md` points to them rather than duplicating them.

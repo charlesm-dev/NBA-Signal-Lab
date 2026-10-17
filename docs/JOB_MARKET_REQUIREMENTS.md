@@ -22,7 +22,7 @@ Prior research (ChatGPT-era, 2025–2026 postings) described **48 early-career b
 - Do not cite an unverified posting's requirements as fact; cite them as "previously reported".
 - Exact Django/FastAPI/Java-Spring frequencies are **not recoverable**.
 
-The full second-batch audit is preserved at [archive/SECOND_BATCH_BACKEND_JOB_RESEARCH.md](archive/SECOND_BATCH_BACKEND_JOB_RESEARCH.md).
+**Provenance:** (A) the original handoff's job-market document — historical counts and three original-sample URLs; (B) earlier ChatGPT conversation context — names and summaries of the second 24, not employer pages; (C) the Tessera Labs posting inspected by the prior audit. The original planning files, including the full second-batch audit, are preserved verbatim in git history: [commit 241bf34](https://github.com/charlesm-dev/nba-signal-lab/tree/241bf34).
 
 ## 2. Normalization (coding rubric used historically)
 
