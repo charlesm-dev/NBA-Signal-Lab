@@ -9,6 +9,7 @@ Agreed clarifications, recorded in [DECISIONS.md](DECISIONS.md). Stage numbers a
 - **Execution order (ADR-012):** 1 → 2 → 3 → 4 → **6 (M1)** → **5** → 7 → 8 (M2) → 9 onward. Django (Stage 5) no longer gates M1.
 - **Ingestion (ADR-010):** a Python package + CLI on the NBA data-plane side, not FastAPI request handlers.
 - **Early tooling (ADR-011):** Postgres-only Docker Compose from Stage 3; basic CI (lint + tests) once code exists. Stages 17–18 mature these.
+- **Data source (ADR-014):** NBA.com via `nba_api`, private use only. No public demo: Stage 19 deploys a private, access-restricted staging environment; Stage 21 uses a recorded walkthrough. Raw data never goes in the public repo.
 - **Document names (ADR-013):** the charter is `docs/PROJECT_SPEC.md`; ADRs live in `docs/DECISIONS.md`; the feasibility report is `docs/DATA_SOURCES.md`.
 
 ## Milestones

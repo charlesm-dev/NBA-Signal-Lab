@@ -21,3 +21,6 @@ build/
 .DS_Store
 .idea/
 .vscode/
+
+# Raw NBA data — private use only, never committed (ADR-014)
+data/

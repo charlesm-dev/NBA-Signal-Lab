@@ -4,12 +4,12 @@ Read the **Current state** block at the start of every session. Entries below it
 
 ## Current state
 
-- **Stage:** 1 (Charter and repository) — **complete**
+- **Stage:** 2 (Data feasibility spike) — in progress. Task 1 (source research) done.
 - **Milestone:** none reached
 - **Implemented code:** none
-- **Verified:** docs structure; repository pushed to GitHub (`charlesm-dev/nba-signal-lab`, `main` in sync with `origin/main`); Stage 2–4 issues opened (developer-reported)
+- **Data source:** NBA.com via `nba_api`, private use only, no public demo (ADR-014)
 - **Blockers:** none
-- **Next task:** Stage 2 (data feasibility spike) — **requires developer approval to start**. Begin with `/stage-kickoff 2`.
+- **Next task:** Stage 2 Task 2. The developer installs uv, sets up the Python project (Python 3.14, `httpx`/`nba_api`, `pytest`, `ruff`), and records the tooling ADR. Remaining Stage 2 tasks: 3 fetch one game, 4 explore and reconcile the score, 5 offline smoke test with synthetic fixture, 6 write `docs/DATA_SOURCES.md`, then `/verify-stage 2`.
 
 ## Stage 1 checklist
 
@@ -26,6 +26,23 @@ From [DEVELOPMENT_ROADMAP.md](DEVELOPMENT_ROADMAP.md) Stage 1, adapted by ADR-01
 - [x] **Developer** confirmed handoff content incorporated; `docs/archive/` deleted (originals remain in git history, commit `241bf34`)
 
 ## Log
+
+### 2026-10-17 — Stage 2, Task 1: source research and decision
+
+**Done:** Claude checked six candidate sources against their primary terms and docs. The developer chose NBA.com via `nba_api` for private use (ADR-014) after confirming the goal is experience and a résumé project, not a public launch.
+
+**Research notes** (input for `docs/DATA_SOURCES.md`; recheck before relying on them):
+- **NBA.com Terms of Use** (updated 2026-07-13), Section 9: stats only for "private, non-commercial purposes" with prominent NBA.com attribution. Bans use in products presenting live or archived play-by-play (vi) and in comprehensive stats databases without consent (vii). Section 1 allows downloading to a single computer for personal, noncommercial use.
+- **`nba_api`:** MIT-licensed, unofficial client. Third-party reports say stats.nba.com drops requests from cloud IPs (AWS/GCP/Azure) and uses bot protection. Not confirmed for `nba_api` itself.
+- **NBA.com live CDN:** returned HTTP 403 to a single plain request from the developer's machine. Not pursued.
+- **BALLDONTLIE** (terms 2026-09-17): commercial use and public display allowed; no resale of unmodified data; no competing products. Play-by-play is GOAT tier only ($39.99/mo, 600 req/min) and starts with the 2025-26 season. Substitution coverage unknown. Chosen as the fallback.
+- **Sportradar:** 30-day trial (1,000 requests per 30 days, 1 QPS); production for paying customers only.
+- **Kaggle:** `wyattowalsh/basketball` (CC BY-SA 4.0, has play-by-play) and `eoinamoore/...` (CC0, box scores) are both NBA.com-derived, so the same private-use limits apply.
+- **Basketball-Reference** (terms 2023-05-19): automated access needs written permission. Rejected.
+
+**Still to verify in Tasks 3–4:** play-by-play includes substitutions; event ordering; history depth; request pacing that `nba_api` tolerates from a home connection.
+
+**Note:** the Stage 1 close-out commit `8293c42` had not reached GitHub as of this entry (`git status`: ahead of `origin/main`).
 
 ### 2026-10-17 — Stage 1 closed
 
@@ -50,7 +67,7 @@ From [DEVELOPMENT_ROADMAP.md](DEVELOPMENT_ROADMAP.md) Stage 1, adapted by ADR-01
 
 **Decisions:** ADR-010, ADR-011, ADR-012, ADR-013.
 
-**Developer context recorded:** new to Python, Django and FastAPI; strong JavaScript and Git; SQL basics. Target is ~2 months at about 1 hour/day. Public demo wanted if licensing allows.
+**Developer context recorded:** new to Python, Django and FastAPI; strong JavaScript and Git; SQL basics. Target is ~2 months at about 1 hour/day. Public demo wanted if licensing allows (later dropped, ADR-014).
 
 **Open issues**
 - Schedule risk: ~50–60 hours makes M1 realistic, M2 a stretch. Revisit after Stage 2.

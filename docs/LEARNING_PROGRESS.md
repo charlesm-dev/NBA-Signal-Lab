@@ -46,7 +46,7 @@ Concepts the project will teach, grouped by the stage where they first matter. A
 | Python environment and tooling (venv, uv, project layout) | 2 | New | |
 | Python idioms vs JavaScript (types, dicts/lists, comprehensions, exceptions, modules) | 2 | New | |
 | HTTP clients in Python (HTTPX), timeouts, retries | 2 | New | REST itself is Prior |
-| Data licensing, provenance, provider rate limits | 2 | New | |
+| Data licensing, provenance, provider rate limits | 2 | Introduced | 2026-10-17: Claude evaluated six sources' terms; developer asked what "private use" means and made the source decision (ADR-014). Developer to verify the terms independently. |
 | Fixtures and smoke tests; pytest basics | 2 | New | |
 | Relational modeling: keys, normalization, constraints | 3 | New | SQL basics are Prior |
 | Database migrations | 3 | New | roadmap.sh: not started |
@@ -80,4 +80,5 @@ Concepts the project will teach, grouped by the stage where they first matter. A
 
 Short, dated entries recording what was learned or demonstrated, newest first.
 
+- **2026-10-17:** Stage 2 Task 1. Learned what "private, non-commercial use" allows (local use, public code, no public display or raw-data redistribution) and how terms of use drive architecture (data stays local; synthetic CI fixtures).
 - **2026-10-16:** Project setup (Stage 1). No implementation yet. Baseline recorded from self-report.

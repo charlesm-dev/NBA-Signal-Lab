@@ -14,11 +14,12 @@ Significant decisions and their rationale, newest decisions appended at the end.
 | 006 | PostgreSQL is the canonical store | FIXED |
 | 007 | SQLAlchemy + Alembic for the NBA schema | PROPOSED — decide at Stage 3 |
 | 008 | Infrastructure admitted only on measured need | AGREED |
-| 009 | Data feasibility gate; historical replay instead of live feed | FIXED |
+| 009 | Data feasibility gate; historical replay instead of live feed | FIXED (public-demo note superseded by 014) |
 | 010 | Ingestion is a package + CLI, not HTTP endpoints | AGREED |
 | 011 | Local Postgres via Compose from Stage 3; basic CI early | AGREED |
 | 012 | Django control plane does not gate M1 | AGREED |
 | 013 | Documentation structure | AGREED |
+| 014 | NBA.com via `nba_api`, private use only; no public demo | AGREED |
 
 ---
 
@@ -112,3 +113,17 @@ Significant decisions and their rationale, newest decisions appended at the end.
 - **Status:** AGREED (2026-10-16)
 - **Decision:** `docs/PROJECT_SPEC.md` serves as the Stage 1 project charter (replacing the planned `docs/project-charter.md`). This file replaces the planned `docs/adr/` directory with numbered ADRs in one file. `docs/DATA_SOURCES.md` is created in Stage 2 (replacing the planned `docs/data-source-feasibility.md`). The original handoff files were preserved in `docs/archive/` until the developer confirmed their content was incorporated (2026-10-17); they were then deleted and remain in git history at commit `241bf34`.
 - **Consequences:** Fewer, non-overlapping documents; `CLAUDE.md` points to them rather than duplicating them.
+
+## ADR-014 — NBA.com via `nba_api`, private use only; no public demo
+
+- **Status:** AGREED (2026-10-17). Supersedes the public-demo intent recorded in ADR-009 and PROJECT_SPEC §5.
+- **Context:** Six candidate sources were checked against their terms and docs (Stage 2, Task 1). Only BALLDONTLIE permits public display, but its play-by-play starts in 2025-26 and needs a $39.99/month tier. NBA.com's Terms of Use (Section 9, last updated 2026-07-13) allow statistics only for "private, non-commercial purposes" with prominent attribution, and forbid products presenting archived play-by-play or comprehensive stats databases. The developer confirmed the project's goal is technical experience and a résumé project, not a public launch.
+- **Decision:** Use NBA.com data through the unofficial `nba_api` Python client, for private, non-commercial use only. Drop the public demo. Show the project through the public code repository, a README and a recorded walkthrough.
+- **Rules that follow:**
+  - Raw or bulk NBA.com data is never committed to the public repository. It lives locally (gitignored).
+  - Tests that run in CI use small, hand-written synthetic fixtures. Real-data checks run locally only.
+  - Credit NBA.com wherever statistics are displayed.
+  - Respect NBA.com's servers: one request at a time, delays between requests, and cached responses so the same thing is never fetched twice.
+  - Any cloud deployment (Stage 19) is private and access-restricted. Data is fetched from the developer's machine, because stats.nba.com reportedly blocks cloud IPs.
+- **Alternatives:** BALLDONTLIE (public demo possible; costs money; one season of play-by-play) is the fallback if `nba_api` becomes unusable or the goals change. Sportradar, Basketball-Reference and the NBA.com live CDN were rejected. Kaggle datasets derived from NBA.com carry the same private-use limits.
+- **Consequences:** Free, with many seasons of play-by-play. The adapter must cope with an unofficial, undocumented API that can change without notice, which is good practice for the adapter pattern. The full source comparison goes in `docs/DATA_SOURCES.md` (Stage 2, Task 6).

@@ -26,4 +26,4 @@ Additional infrastructure (Celery, Redis, Kafka, AWS) is added only after a meas
 
 ## Data
 
-No NBA data source has been selected yet. Source licensing and feasibility are evaluated in Stage 2 before any schema work. This project does not claim access to licensed live NBA data.
+Statistics come from NBA.com via the unofficial [`nba_api`](https://github.com/swar/nba_api) client, used for **private, non-commercial purposes only**, with attribution to NBA.com. This repository contains code and synthetic test fixtures only; no NBA data is redistributed. The project does not claim access to licensed live NBA data. See [ADR-014](docs/DECISIONS.md).

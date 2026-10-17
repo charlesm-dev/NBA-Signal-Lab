@@ -36,6 +36,7 @@ None yet. Add commands here as tooling is established; never guess them.
 
 ## Security and data
 - No secrets in git or logs: `.env` is gitignored, `.env.example` is committed.
+- Data source is NBA.com via `nba_api`, private non-commercial use only (ADR-014). Never commit raw NBA data; CI uses synthetic fixtures; credit NBA.com wherever stats are shown. Fetch politely: delays, caching, no parallel hammering.
 - Respect provider terms, licenses and rate limits. Never assert data access that hasn't been verified in docs/DATA_SOURCES.md. Don't bypass access controls.
 - Label simulated scale and historical replay as such.
 

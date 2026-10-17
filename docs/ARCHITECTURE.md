@@ -7,7 +7,7 @@ System components, ownership boundaries, data flow, technology admission rules a
 ## 1. System overview
 
 ```text
-Permitted NBA source(s)  (chosen in Stage 2)
+NBA.com via nba_api  (private use only — ADR-014)
             |
       Provider adapter            <- only place provider-specific formats/IDs appear
             |
@@ -66,6 +66,7 @@ Django is efficient for relational user/business workflows, permissions and admi
 - **Persistence for the NBA schema — PROPOSED:** SQLAlchemy + Alembic. The trade-off (two ORMs and two migration systems against one database vs. one migration system that blurs ownership) is decided at Stage 3 and recorded as ADR-007.
 - **Local PostgreSQL** runs in Docker Compose (Postgres-only) from Stage 3 onward; full containerization of the app is Stage 17 (ADR-011).
 - **Tests run against real PostgreSQL**, never SQLite substitutes.
+- **Raw NBA data stays local** (gitignored `data/`). The public repo holds code and small synthetic fixtures only (ADR-014).
 
 ## 4. Data model (PROPOSED — depends on Stage 2 source findings)
 

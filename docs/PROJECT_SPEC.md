@@ -30,6 +30,7 @@ NBA Signal Lab is **not**:
 - a betting or fantasy-sports product or clone
 - a frontend-heavy product (API docs and Django admin are the initial "UI")
 - a licensed live-data product — no claim of real-time NBA feed access; historical replay is the substitute
+- a public product or hosted public demo — the project runs privately; the code repository is public, the data is not (ADR-014)
 - an ML/prediction project — predictions are optional and late, never at the expense of correctness
 - a microservices showcase — one monorepo, two framework processes, nothing more without justification
 - a keyword checklist — no technology is added solely for résumé coverage
@@ -62,9 +63,9 @@ NBA Signal Lab is **not**:
 
 ## 5. Data constraints
 
-No NBA provider, license, rate limit, historical depth or live entitlement has been verified yet. Stage 2 (data feasibility) is a **blocking gate**: no schema or framework work begins until a source is evaluated and one real complete game is obtained under acceptable terms. Findings will be recorded in `docs/DATA_SOURCES.md` (created in Stage 2).
+**Chosen source (ADR-014, 2026-10-17):** NBA.com data through the unofficial `nba_api` Python client, for **private, non-commercial use only**, with attribution to NBA.com. Stage 2 is still a **blocking gate**: no schema or framework work begins until one real complete game is fetched and checked. Full findings go in `docs/DATA_SOURCES.md` (Stage 2).
 
-**Public demo intent (confirmed by developer, 2026-10-16):** the project should eventually have a public demo **if data licensing allows it**. Source evaluation must therefore check redistribution and public-display rights, not only personal-use access. If no source permits public display, the fallback is a public demo over permitted/derived data only, or a private demo with a recorded walkthrough.
+**No public demo (developer, 2026-10-17):** the goal is technical experience and a résumé project, not a public launch. The project is shown through its public code, README and a recorded walkthrough. Raw NBA data is never committed to the public repository; CI tests use small synthetic fixtures.
 
 ## 6. Milestones and success criteria
 
@@ -73,8 +74,8 @@ No NBA provider, license, rate limit, historical depth or live entitlement has b
 | **M1** vertical slice | 6 | Permitted real game ingested into canonical PostgreSQL; tested FastAPI responses; first baseline metrics. Tag `v0.1.0`. |
 | **M2** functional MVP | 8 | Validated possession/game-state analysis over meaningful history; Django product workflows; repeatable ingestion/rebuild; documented API; automated tests. Tag `v0.2.0-mvp`. |
 | **M3** advanced backend | 13 | *Where justified:* measured async processing and caching; independent consumers/replay; proven duplicate/retry/recovery behavior. |
-| **M4** production-like | 19 | Hardened auth/security, failure handling, Docker/CI/telemetry, reproducible secure cloud staging, backups and rollback. |
-| **M5** portfolio-ready | 21 | Diagrams, ADRs, reproducible benchmarks with **actual** before/after results, explainable domain correctness and tradeoffs. |
+| **M4** production-like | 19 | Hardened auth/security, failure handling, Docker/CI/telemetry, reproducible secure **private** cloud staging, backups and rollback. |
+| **M5** portfolio-ready | 21 | Diagrams, ADRs, reproducible benchmarks with **actual** before/after results, explainable domain correctness and tradeoffs; recorded walkthrough. |
 
 ### Honest claims
 
@@ -97,4 +98,4 @@ Résumé bullets and docs use measured numbers only. The project does **not** de
 | Workspace role set; identity handoff Django → FastAPI | Stage 5 / 15 |
 | Exact possession rules and game-state filters; which rolling stats are mandatory | Stages 7–8 |
 | Target persona and whether any UI beyond API docs/admin is needed | Stage 8 |
-| Cloud budget and public-demo topology | Stage 19 |
+| Cloud budget and private-staging topology | Stage 19 |
